@@ -5,8 +5,11 @@ var moment = require("moment");
 var Twitter = require('twitter');
 var credentials = require("./credential.json")
 
-//var dictPath = "neodict/"
-var dictPath = "node_modules/kuromoji/dist/dict/"
+if (credentials.platform == "gcp"){
+  var dictPath = "neologd/"
+} else {
+  var dictPath = "node_modules/kuromoji/dist/dict/"
+}
 var oneDayBefore = moment().add(-1,'days').format("YYYY-MM-DDTHH:mm:ss")
 
 var client = new Twitter({
