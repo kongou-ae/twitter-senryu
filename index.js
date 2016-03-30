@@ -213,6 +213,7 @@ if ( process.argv[2] == "test"){
         }
         next()
       },function(err){
+        console.log("finished")
         if(err){
           console.log("error!!")
         }
