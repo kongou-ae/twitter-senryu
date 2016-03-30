@@ -5,6 +5,7 @@ var moment = require("moment");
 var Twitter = require('twitter');
 var credentials = require("./credential.json")
 
+
 if (credentials.platform == "gcp"){
   var dictPath = "neologd/"
 } else {
@@ -78,11 +79,11 @@ var checkSenryu = function(path,callback){
     // 575をチェックし始めた先頭が助詞の場合は、forを抜けてcallbackでfalseを返す
     if (tmp.length == 0 && checkAry[j].pos == "助詞"){
       break;  
-    // 575をチェックし始めた先頭が助動詞「た」の場合は、forを抜けてcallbackでfalseを返す
-    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞"){
-//    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞" && checkAry[j].reading == "タ"){
-//      break;
-//    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞" && checkAry[j].reading == "ン"){
+    // 575をチェックし始めた先頭が助動詞「助動詞」の場合は、forを抜けてcallbackでfalseを返す
+    //} else if (tmp.length == 0 && checkAry[j].pos == "助動詞"){
+    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞" && checkAry[j].reading == "タ"){
+      break;
+    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞" && checkAry[j].reading == "ン"){
       break;
     } else {
       tmp = tmp + checkAry[j].reading 
@@ -163,7 +164,9 @@ if ( process.argv[2] == "test"){
     "短髪にしたから髭がいい感じ",
     "麻衣ちゃん今日は更新ないかなー",
     "遅い、何やってんのあのエロメガネ",
-    "十四松の彼女出てたんだ！"
+    "十四松の彼女出てたんだ！",
+    "サブい！まだきりかえができてないなー",
+    "斧ぐらい一家に一本あるでしょ"
   ]
   
   kuromoji.builder({ dicPath: dictPath }).build(function (err, tokenizer) {
@@ -175,6 +178,11 @@ if ( process.argv[2] == "test"){
         }
       })     
       next()
+    },function(err){
+        if (err){
+          console.log("error!!")
+        }
+        console.log("stop VM")
     })
   })
 } else {
@@ -204,6 +212,26 @@ if ( process.argv[2] == "test"){
           })        
         }
         next()
+      },function(err){
+        if(err){
+          console.log("error!!")
+        }
+        var gcloud = require('gcloud');
+        var gce = gcloud.compute({
+          projectId: 'black-pier-565',
+          keyFilename: 'key.json'
+        });
+          
+        var zone = gce.zone('asia-east1-a');
+        var vm = zone.vm('instance-4');
+          
+        vm.stop(function(err, operation, apiResponse) {
+          if (err){
+            console.log(err)
+          } else {
+            console.log("stop VM")
+          }
+        });
       })
     });
   });

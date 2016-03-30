@@ -1,0 +1,12 @@
+[Unit]
+Description=run senryu after boot
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=no
+WorkingDirectory=/home/y_matsumoto_ae/twitter-senryu/
+ExecStart=/usr/bin/node index.js
+
+[Install]
+WantedBy=multi-user.target

@@ -1,3 +1,6 @@
 credential.json
 node_modules
 neologd
+lambda/key.json
+lambda/node_modules
+key.json
