@@ -227,6 +227,8 @@ if ( process.argv[2] == "test"){
             
           var zone = gce.zone('asia-east1-a');
           var vm = zone.vm('instance-4');
+          
+          console.log("try to stop instance")
             
           vm.stop(function(err, operation, apiResponse) {
             if (err){
