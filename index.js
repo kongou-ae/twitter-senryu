@@ -216,22 +216,25 @@ if ( process.argv[2] == "test"){
         if(err){
           console.log("error!!")
         }
-        var gcloud = require('gcloud');
-        var gce = gcloud.compute({
-          projectId: 'black-pier-565',
-          keyFilename: 'key.json'
-        });
-          
-        var zone = gce.zone('asia-east1-a');
-        var vm = zone.vm('instance-4');
-          
-        vm.stop(function(err, operation, apiResponse) {
-          if (err){
-            console.log(err)
-          } else {
-            console.log("stop VM")
-          }
-        });
+        
+        if (credentials.platform == "gcp"){
+          var gcloud = require('gcloud');
+          var gce = gcloud.compute({
+            projectId: 'black-pier-565',
+            keyFilename: 'key.json'
+          });
+            
+          var zone = gce.zone('asia-east1-a');
+          var vm = zone.vm('instance-4');
+            
+          vm.stop(function(err, operation, apiResponse) {
+            if (err){
+              console.log(err)
+            } else {
+              console.log("stop VM")
+            }
+          });
+        }
       })
     });
   });
