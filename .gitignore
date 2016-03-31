@@ -3,4 +3,6 @@ node_modules
 neologd
 lambda/key.json
 lambda/node_modules
+lambda/lambda.zip
 key.json
+memo

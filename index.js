@@ -24,7 +24,7 @@ var options = {
   url: credentials.url + "/api/v1/messages/search?q=あorいorうorえorおorかorきorくorけorこorさorしorすorせorそorたorちorつorてorとorなorにorぬorねorのorはorひorふorへorほorまorみorむorめorもorやorゆorよorわorをorん " + 
     "lang:ja " +
     "posted:" + oneDayBefore + "Z" +
-    "&size=2500",
+    "&size=5",
   method: 'GET',
   headers: {
     'Content-Type':'application/json'
@@ -218,26 +218,37 @@ if ( process.argv[2] == "test"){
           console.log("error!!")
         }
         
-        if (credentials.platform == "gcp"){
-          var gcloud = require('gcloud');
-          var gce = gcloud.compute({
-            projectId: 'black-pier-565',
-            keyFilename: 'key.json'
-          });
+        // 自殺するかどうかAPI Gatewayに問い合わせる
+        var options = {
+          url: "https://wvgkmg4p7c.execute-api.ap-northeast-1.amazonaws.com/production",
+          method: 'GET',
+          headers: {
+            'Content-Type':'application/json'
+          }
+        };
+        
+        request.get(options,function(error, response, body){
+          if (credentials.platform == "gcp" && JSON.parse(body).statu =="enable"){
+            var gcloud = require('gcloud');
+            var gce = gcloud.compute({
+              projectId: 'black-pier-565',
+              keyFilename: 'key.json'
+            });
+              
+            var zone = gce.zone('asia-east1-a');
+            var vm = zone.vm('instance-4');
             
-          var zone = gce.zone('asia-east1-a');
-          var vm = zone.vm('instance-4');
-          
-          console.log("try to stop instance")
-            
-          vm.stop(function(err, operation, apiResponse) {
-            if (err){
-              console.log(err)
-            } else {
-              console.log("stop VM")
-            }
-          });
-        }
+            console.log("try to stop instance")
+              
+            vm.stop(function(err, operation, apiResponse) {
+              if (err){
+                console.log(err)
+              } else {
+                console.log("stop VM")
+              }
+            });
+          }
+        })
       })
     });
   });
