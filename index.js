@@ -24,7 +24,7 @@ var options = {
   url: credentials.url + "/api/v1/messages/search?q=あorいorうorえorおorかorきorくorけorこorさorしorすorせorそorたorちorつorてorとorなorにorぬorねorのorはorひorふorへorほorまorみorむorめorもorやorゆorよorわorをorん " + 
     "lang:ja " +
     "posted:" + oneDayBefore + "Z" +
-    "&size=5",
+    "&size=2500",
   method: 'GET',
   headers: {
     'Content-Type':'application/json'
