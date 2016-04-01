@@ -219,39 +219,37 @@ if ( process.argv[2] == "test"){
           console.log("twitter check happend error!!")
         }
         
-        if (credentials.platform == "gcp"){
-          // 自殺するかどうかAPI Gatewayに問い合わせる
-          var options = {
-            url: "https://wvgkmg4p7c.execute-api.ap-northeast-1.amazonaws.com/production",
-            method: 'GET',
-            headers: {
-              'Content-Type':'application/json'
-            }
-          };
+        // 自殺するかどうかAPI Gatewayに問い合わせる
+        var options = {
+          url: "https://wvgkmg4p7c.execute-api.ap-northeast-1.amazonaws.com/production",
+          method: 'GET',
+          headers: {
+            'Content-Type':'application/json'
+          }
+        };
           
-          request.get(options,function(error, response, body){
-            if (credentials.platform == "gcp" && JSON.parse(body).status =="enable"){
-              var gcloud = require('gcloud');
-              var gce = gcloud.compute({
-                projectId: 'black-pier-565',
-                keyFilename: 'key.json'
-              });
-                
-              var zone = gce.zone('asia-east1-a');
-              var vm = zone.vm('instance-4');
+        request.get(options,function(error, response, body){
+          if (credentials.platform == "gcp" && JSON.parse(body).status =="enable"){
+            var gcloud = require('gcloud');
+            var gce = gcloud.compute({
+              projectId: 'black-pier-565',
+              keyFilename: 'key.json'
+            });
               
-              console.log("try to stop instance")
-                
-              vm.stop(function(err, operation, apiResponse) {
-                if (err){
-                  console.log(err)
-                } else {
-                  console.log("stop VM")
-                }
-              });
-            }
-          })
-        }
+            var zone = gce.zone('asia-east1-a');
+            var vm = zone.vm('instance-4');
+              
+            console.log("try to stop instance")
+              
+            vm.stop(function(err, operation, apiResponse) {
+              if (err){
+                console.log(err)
+              } else {
+                console.log("stop VM")
+              }
+            });
+          }
+        })
       })
     });
   });
