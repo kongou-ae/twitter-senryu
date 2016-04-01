@@ -80,10 +80,11 @@ var checkSenryu = function(path,callback){
     if (tmp.length == 0 && checkAry[j].pos == "助詞"){
       break;  
     // 575をチェックし始めた先頭が助動詞「助動詞」の場合は、forを抜けてcallbackでfalseを返す
-    //} else if (tmp.length == 0 && checkAry[j].pos == "助動詞"){
-    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞" && checkAry[j].reading == "タ"){
+    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞" ){
       break;
-    } else if (tmp.length == 0 && checkAry[j].pos == "助動詞" && checkAry[j].reading == "ン"){
+    } else if (tmp.length == 0 && checkAry[j].pos == "名詞" && checkAry[j].pos_detail_1 == "非自立") {
+      break;
+    } else if (tmp.length == 0 && checkAry[j].pos == "動詞" && checkAry[j].pos_detail_1 == "非自立") {
       break;
     } else {
       tmp = tmp + checkAry[j].reading 
@@ -213,42 +214,44 @@ if ( process.argv[2] == "test"){
         }
         next()
       },function(err){
-        console.log("finished")
-        if(err){
-          console.log("error!!")
+        console.log("twitter check was finished")
+        if (err){
+          console.log("twitter check happend error!!")
         }
         
-        // 自殺するかどうかAPI Gatewayに問い合わせる
-        var options = {
-          url: "https://wvgkmg4p7c.execute-api.ap-northeast-1.amazonaws.com/production",
-          method: 'GET',
-          headers: {
-            'Content-Type':'application/json'
-          }
-        };
-        
-        request.get(options,function(error, response, body){
-          if (credentials.platform == "gcp" && JSON.parse(body).statu =="enable"){
-            var gcloud = require('gcloud');
-            var gce = gcloud.compute({
-              projectId: 'black-pier-565',
-              keyFilename: 'key.json'
-            });
+        if (credentials.platform == "gcp"){
+          // 自殺するかどうかAPI Gatewayに問い合わせる
+          var options = {
+            url: "https://wvgkmg4p7c.execute-api.ap-northeast-1.amazonaws.com/production",
+            method: 'GET',
+            headers: {
+              'Content-Type':'application/json'
+            }
+          };
+          
+          request.get(options,function(error, response, body){
+            if (credentials.platform == "gcp" && JSON.parse(body).status =="enable"){
+              var gcloud = require('gcloud');
+              var gce = gcloud.compute({
+                projectId: 'black-pier-565',
+                keyFilename: 'key.json'
+              });
+                
+              var zone = gce.zone('asia-east1-a');
+              var vm = zone.vm('instance-4');
               
-            var zone = gce.zone('asia-east1-a');
-            var vm = zone.vm('instance-4');
-            
-            console.log("try to stop instance")
-              
-            vm.stop(function(err, operation, apiResponse) {
-              if (err){
-                console.log(err)
-              } else {
-                console.log("stop VM")
-              }
-            });
-          }
-        })
+              console.log("try to stop instance")
+                
+              vm.stop(function(err, operation, apiResponse) {
+                if (err){
+                  console.log(err)
+                } else {
+                  console.log("stop VM")
+                }
+              });
+            }
+          })
+        }
       })
     });
   });
